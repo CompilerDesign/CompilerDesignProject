@@ -168,8 +168,8 @@ public class DBConnectServlet extends HttpServlet {
             }
             
             if(request.getParameter("method").equals("run")){
-                JavaInterpreter serverY = new JavaInterpreter(request.getParameter("serverContent"));
-                JavaInterpreter volunteer = new JavaInterpreter(request.getParameter("volunteerContent"));
+                JavaInterpreter serverY = new JavaInterpreter(request.getParameter("serverContent"), "ServerY");
+                JavaInterpreter volunteer = new JavaInterpreter(request.getParameter("volunteerContent"), "Main");
                 String serverYCode = serverY.javaConverted;
                 String volunteerCode = volunteer.javaConverted;                
               
@@ -246,13 +246,22 @@ public class DBConnectServlet extends HttpServlet {
         
         
     }
-    private void implementServerY(String code) throws FileNotFoundException{
-        System.out.println("enter implement server Y");
-        PrintWriter out = new PrintWriter("src/java/ServerY.java");
-        out.println(code);
-        out.close();
-//        ServerY.start();
-        System.out.println("implement server Y done");
+    private void implementServerY(String code){       
+        //hindi ko na po alam!!! enebe
+        new Thread(new Runnable() { 
+                    public void run() {
+                        try {
+                           System.out.println("enter implement server Y");
+                            PrintWriter out = new PrintWriter("C:\\Users\\Jojo Espina\\Desktop\\compiler-master\\src\\java\\ServerY.java");
+                            out.println(code);
+                            out.close();
+                    //        ServerY.start();
+                            System.out.println("implement server Y done");
+                        } catch (IOException ex) {
+                            Logger.getLogger(Volunteer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }).start();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

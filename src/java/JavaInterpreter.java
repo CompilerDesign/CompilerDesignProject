@@ -16,7 +16,7 @@ public class JavaInterpreter {
     public static HashMap hashMap = new HashMap();
     public String javaConverted = "";
     
-    public JavaInterpreter (String srcCode){
+    public JavaInterpreter (String srcCode, String className){
 //        String srcCode = readTxtFile("SampleCode.txt");
         
         srcCode = srcCode.replace("}", " };");
@@ -73,7 +73,7 @@ public class JavaInterpreter {
                     + "import java.awt.event.*;\n"
                     + "import java.text.*;\n"
                     + "import java.util.regex.*;\n"
-                    + "\n\npublic class Main{\n\n";
+                    + "\n\npublic class "+className+"{\n\n";
         
         String close = "\n\n}//End of Main class";
         
