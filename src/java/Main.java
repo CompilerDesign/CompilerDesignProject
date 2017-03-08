@@ -1,0 +1,1 @@
+import java.util.*; import java.lang.*; import java.io.*; import java.net.*; import java.awt.*; import java.awt.event.*; import java.text.*; import java.util.regex.*;   public class Main{  public static Double start(){ double num1; double num2; num1 = 5; num2 = 10; return ( num1 + num2 ); }   }//End of Main class
