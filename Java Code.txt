@@ -1,0 +1,18 @@
+package compilerdesignproject;
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+import java.net.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.text.*;
+import java.util.regex.*;
+
+
+public class Main{
+
+Double a;
+
+
+}//End of Main class

@@ -1,0 +1,21 @@
+
+body {
+	background-image: url("../images/bg4.png");
+	-moz-background-size: cover;
+	-webkit-background-size: cover;
+	background-size: cover;
+	background-position: top center !important;
+	background-repeat: no-repeat !important;
+	background-attachment: fixed;
+}
+
+div {
+	margin-top: 450px;
+	margin-left: 550px;
+}
+
+a {
+	color: white;
+	text-decoration: none;
+}
+
