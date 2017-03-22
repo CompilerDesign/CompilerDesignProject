@@ -53,7 +53,7 @@ public class Server extends Thread{
  
  public Server() throws IOException 
    {
-//    fromUI();
+    System.out.println("Server");   
     ServerSocket serverSocket = null; 
     try { 
          serverSocket = new ServerSocket(888); 
@@ -79,11 +79,12 @@ public class Server extends Thread{
     String ipAdd = ip.getHostAddress();
     OutputStream ostream = null;
     System.out.println (ipAdd+ " connected...");
+//    System.out.println("Elza " + ServerY.returnVolCode("val"));
     try {
-         ostream = clientSocket.getOutputStream();
-         pStream = new PrintStream(ostream);
-        fromUI = fromUI.replace("\n"," ");
-        pStream.println(fromUI);
+        ostream = clientSocket.getOutputStream();
+        pStream = new PrintStream(ostream);
+//        fromUI = fromUI.replace("\n"," ");
+        pStream.println(ServerY.returnVolCode("val"));
      } catch (IOException ex) {
          Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
      }

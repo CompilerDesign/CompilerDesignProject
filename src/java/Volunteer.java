@@ -34,7 +34,7 @@ public class Volunteer extends javax.swing.JFrame implements Runnable {
             receiveFromServer(s);
         } 
         catch (ConnectException connExc) {  
-        System.out.println("Error: Could not connect to the server.");
+            System.out.println("Error: Could not connect to the server.");
         } catch (IOException e){} 
   }
     
@@ -45,7 +45,7 @@ public class Volunteer extends javax.swing.JFrame implements Runnable {
                 code +=receiveInput;
 //                System.out.println(code);
                 //run code in secondary app
-//                insertHeartbeat();
+                insertHeartbeat();
                 implementCode();
                 Thread.sleep(10000);//delay bcoz we wait for file to complete
                 runAsThreads(s);
@@ -66,7 +66,7 @@ public class Volunteer extends javax.swing.JFrame implements Runnable {
     }
     
     private void implementCode() throws FileNotFoundException{
-        System.out.println("code" +code);
+        System.out.println(code);
         PrintWriter out = new PrintWriter("src/java/Main.java");
         out.println(code);
         out.close();

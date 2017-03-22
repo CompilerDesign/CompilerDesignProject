@@ -172,13 +172,14 @@ public class DBConnectServlet extends HttpServlet {
                 JavaInterpreter volunteer = new JavaInterpreter(request.getParameter("volunteerContent"), "Main");
                 String serverYCode = serverY.javaConverted;
                 String volunteerCode = volunteer.javaConverted;                
-              
+
                 if(volunteerCode != ""){ 
-                        Server.fromUI = volunteerCode;
+//                        /Server.fromUI = volunteerCode;
                         
                         System.out.println("serverYcode " +serverYCode );
-                        implementServerY(serverYCode);                       
-                        new Server();                     
+                        new Server();
+//                        implementServerY(serverYCode);                       
+                                             
                        
                         JSONObject newObj = new JSONObject();      
                         newObj.put("fromVolunteer", Server.responseFromVolunteer);
@@ -246,23 +247,16 @@ public class DBConnectServlet extends HttpServlet {
         
         
     }
-    private void implementServerY(String code){       
-        //hindi ko na po alam!!! enebe
-        new Thread(new Runnable() { 
-                    public void run() {
-                        try {
-                           System.out.println("enter implement server Y");
-                            PrintWriter out = new PrintWriter("C:\\Users\\Jojo Espina\\Desktop\\CompilerDesignProject-completeSystem\\src\\java\\ServerY.java");
-                            out.println(code);
-                            out.close();
-                            System.out.println(ServerY.start());
-                            System.out.println("implement server Y done");
-                        } catch (IOException ex) {
-                            Logger.getLogger(Volunteer.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }).start();
-    }
+//    private void implementServerY(String code){       
+//        //hindi ko na po alam!!! enebe
+//        new Thread(new Runnable() { 
+//                    public void run() {
+//                        System.out.println("enter implement server Y");
+//                        System.out.println(ServerY.main());
+//                        System.out.println("implement server Y done");
+//                    }
+//                }).start();
+//    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

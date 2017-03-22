@@ -69,23 +69,78 @@ public class JavaInterpreter {
                     + "import java.lang.*;\n"
                     + "import java.io.*;\n"
                     + "import java.net.*;\n"
-                    + "import java.awt.*;\n"
                     + "import java.awt.event.*;\n"
                     + "import java.text.*;\n"
                     + "import java.util.regex.*;\n"
-                    + "\n\npublic class "+className+"{\n\n";
+                    + "import java.io.*;\n"
+                    + "\n\npublic class "+className+ "{\n\n"
+                    + "public static String main (String args[]){\n\n";
         
-        String close = "\n\n}//End of Main class";
+        String mainClose = "\n\n}\n\n";
         
-        javaCode = pkg + head + javaCode + close;
+        String builtInFunctions = "public static String getContent(String linkURL)\n" +
+                                "{\n" +
+                                "    URL url = null;\n" +
+                                "    InputStream is = null;\n" +
+                                "    BufferedReader reader = null;\n" +
+                                "    String line = null;\n" +
+                                "    String content =\"\";\n" +
+                                "    try\n" +
+                                "    {\n" +
+                                "        System.out.println(\"Link URL: \"+linkURL);\n" +
+                                "        url = new URL(linkURL);\n" +
+                                "        is = url.openConnection().getInputStream();\n" +
+                                "        reader = new BufferedReader( new InputStreamReader( is ));\n" +
+                                "\n" +
+                                "        while( ( line = reader.readLine() ) != null )  \n" +
+                                "        {\n" +
+                                "           content += line;\n" +
+                                "        }\n" +
+                                "        reader.close();\n" +
+                                "    }\n" +
+                                "    catch(Exception e)\n" +
+                                "    {\n" +
+                                "        System.err.println(e.getMessage());\n" +
+                                "    }    \n" +
+                                "    //System.out.println(content);\n" +
+                                "    return content;\n" +
+                                "}";
         
-        System.out.println(javaCode);
+        String classClose = "\n\n}//End of Main class";
+//        System.out.println("thisJavaCode " + javaCode);
+//        javaCode = pkg + head + javaCode + mainClose + builtInFunctions+ classClose;
+
+        javaCode = pkg + head + javaCode + mainClose + classClose;
+//        builtInFunctions = builtInFunctions.replaceAll("(\\r|\\n|\\r\\n)+", "\\\\n");
+        javaCode = javaCode.replace("volunteerCode = \"\"", "volunteerCode = \""+builtInFunctions+"\"");
+
+//        javaCode = pkg + head + javaCode + close;
+        
+//        System.out.println(javaCode);
         javaConverted = javaCode;
 //        PrintWriter out = new PrintWriter("src/java/interpreter_output/Main.java");
 //        out.println(javaCode);
 //        out.close();
     }
     
+    
+  private static String readTxtFileLines (String path){
+        String ret = "";
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            
+            String sCurrentLine;
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                ret += sCurrentLine+"\n";
+            }   
+
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
+        
+        return ret;
+    }
     
     private static boolean isArray(String stmt){
         stmt = stmt.trim();
@@ -223,8 +278,8 @@ public class JavaInterpreter {
             }
         }
         if(flag == 1 ){
-            ret = "public static Double start(){";
-                 //public static String main ()
+            ret = "public static String start(){";
+              //public static String main ()
         } else {
             stmt = stmt.replace(";", "");
             stmt = stmt.replace("function", "public static");
