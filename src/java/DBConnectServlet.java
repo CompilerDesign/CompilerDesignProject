@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -15,6 +14,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -107,6 +108,10 @@ public class DBConnectServlet extends HttpServlet {
                         volunteerBtnState = "none";
                     }
                 }
+                System.out.println("Creating Database.....");
+                conn = DriverManager.getConnection("jdbc:mysql://localhost/", "root", "");
+                stmt = conn.createStatement();
+                stmt.executeUpdate("CREATE DATABASE "+request.getParameter("projectName"));
                 JSONObject newObj = new JSONObject();
                 newObj.put("projectID", projectID);
                 newObj.put("status", status);
@@ -241,22 +246,151 @@ public class DBConnectServlet extends HttpServlet {
                 
                 out.println(newObj);
             }
+            
+
+            if(request.getParameter("method").equals("addTable")){
+                System.out.println("Creating table .....");
+                String db = "jdbc:mysql://localhost/"+request.getParameter("dbName");
+                conn = DriverManager.getConnection(db, "root", "");
+                stmt = conn.createStatement();    
+                System.out.println(request.getParameter("tableName"));
+                String table = "CREATE TABLE "+request.getParameter("tableName")+
+                                "(taskID INTEGER NOT NULL AUTO_INCREMENT, "+
+                                "dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "+
+                                "status VARCHAR(50) NULL, "+
+                                "IPAddress VARCHAR(20) NULL, "+
+                                "PRIMARY KEY (taskID))";
+                System.out.println(table);
+                int n = stmt.executeUpdate(table);
+                JSONObject newObj = new JSONObject(); 
+                newObj.put("rows", n);
+                
+                out.println(newObj);
+            }
+            
+            if(request.getParameter("method").equals("addColumns")){
+                System.out.println("Adding columns .....");
+                String db = "jdbc:mysql://localhost/"+request.getParameter("dbName");
+                conn = DriverManager.getConnection(db, "root", "");
+                stmt = conn.createStatement();    
+                String tbs[] = request.getParameter("columns").split("-");
+                for(int i = 0; i < tbs.length; i++){
+                    System.out.println(tbs[i]);
+                    String table = "ALTER TABLE "+request.getParameter("table")+" ADD "+tbs[i]+" VARCHAR(500)";
+                    System.out.println(table);
+                    stmt.execute(table);
+                }
+                JSONObject newObj = new JSONObject(); 
+                newObj.put("rows", 0);
+                
+                out.println(newObj);
+            }
+            
+            if(request.getParameter("method").equals("loadDBTables")){
+                System.out.println("Retrieving tables .....");
+                String db = "jdbc:mysql://localhost/"+request.getParameter("dbName");
+                conn = DriverManager.getConnection(db, "root", "");
+                stmt = conn.createStatement();    
+                DatabaseMetaData md = conn.getMetaData();
+                String[] types = {"TABLE"};
+                ResultSet rs = md.getTables(null, null, "%", types);
+                List tables = new LinkedList();
+                while(rs.next()){
+//                    System.out.println(rs.getString(2));
+                    tables.add(rs.getString(3));
+                }
+                System.out.println(tables);
+                JSONObject newObj = new JSONObject();
+                newObj.put("tables", tables);
+                
+                out.println(newObj);
+            }
+            
+            if(request.getParameter("method").equals("loadTableContent")){
+                System.out.println("Retrieving table content .....");
+                String db = "jdbc:mysql://localhost/"+request.getParameter("dbName");
+                conn = DriverManager.getConnection(db, "root", "");
+                stmt = conn.createStatement(); 
+//                DatabaseMetaData md = conn.getMetaData();
+//                ResultSet rs = md.getColumns(null, null, request.getParameter("table"), null);
+//                List columns = new LinkedList();
+//                while(rs.next()){
+//                    columns.add(rs.getString(4));
+//                }
+                ResultSet rs = stmt.executeQuery("SELECT * FROM "+request.getParameter("table"));
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int columnCount = rsmd.getColumnCount();
+                List columns = new LinkedList();
+                List data = new LinkedList();
+                List result = new LinkedList();
+                // The column count starts from 5
+                for (int i = 5; i <= columnCount; i++ ) {
+                  columns.add(rsmd.getColumnName(i));
+                }
+                while(rs.next()){
+                    data.add(rs.getString("data"));
+                    result.add(rs.getString("result"));
+                }
+                System.out.println(columns);
+                System.out.println(data);
+                System.out.println(result);
+                JSONObject newObj = new JSONObject();   
+                newObj.put("columns", columns);
+                newObj.put("data", data);
+                newObj.put("result", result);        
+                
+                out.println(newObj);                
+            }
+            if(request.getParameter("method").equals("deleteTable")){
+                System.out.println("Deleting table.....");
+                String db = "jdbc:mysql://localhost/"+request.getParameter("dbName");
+                conn = DriverManager.getConnection(db, "root", "");
+                stmt = conn.createStatement(); 
+                stmt.executeUpdate("DROP TABLE "+request.getParameter("table"));
+  
+                JSONObject newObj = new JSONObject();
+                newObj.put("table", 0);
+                
+                out.println(newObj);                
+            }
+            
+            if(request.getParameter("method").equals("clearTable")){
+                System.out.println("Clearing table content.....");
+                String db = "jdbc:mysql://localhost/"+request.getParameter("dbName");
+                conn = DriverManager.getConnection(db, "root", "");
+                stmt = conn.createStatement(); 
+                String table = "DELETE FROM "+request.getParameter("table");
+                System.out.println(table);
+                System.out.println(stmt.executeUpdate(table));
+                JSONObject newObj = new JSONObject();
+                newObj.put("columns", 0);
+                
+                out.println(newObj);                
+            }
+            
+            if(request.getParameter("method").equals("storeCSV")){
+                System.out.println("Uploading CSV content.....");
+                String db = "jdbc:mysql://localhost/"+request.getParameter("dbName");
+                System.out.println(db);
+                conn = DriverManager.getConnection(db, "root", "");
+                String csv[] = request.getParameter("csv").split("\n");
+                System.out.println(csv.length);
+                stmt = conn.createStatement(); 
+                for(int i = 0; i < csv.length; i++){
+                    System.out.println(csv[i]);
+                    stmt.executeUpdate("INSERT INTO "+request.getParameter("table")+" (data, result) VALUES ('"+csv[i]+"', 'NULL')");               
+                }
+                JSONObject newObj = new JSONObject();
+                newObj.put("csv", 0);
+                
+                out.println(newObj);                
+            }
         }catch(Exception e){
             
         }
         
         
     }
-//    private void implementServerY(String code){       
-//        //hindi ko na po alam!!! enebe
-//        new Thread(new Runnable() { 
-//                    public void run() {
-//                        System.out.println("enter implement server Y");
-//                        System.out.println(ServerY.main());
-//                        System.out.println("implement server Y done");
-//                    }
-//                }).start();
-//    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

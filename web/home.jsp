@@ -82,6 +82,7 @@
                 if($("#projectName").val() == ''){
                     alert('Enter Project Name');
                 }else{
+                    $("#spinnerModal").modal('show');
                     $.ajax({
                         type: "POST",
                         url: "DBConnectServlet",
@@ -92,6 +93,7 @@
                             console.log(data);  
                             if(data.status == 1){
                                 $("#project").val(data.projectID);
+                                $("#spinnerModal").modal('hide');
                                 $("#createProjecModal").modal('hide');
                                 alert('Saved!');
                                 window.location.href = "index.jsp";
@@ -176,6 +178,19 @@
     </div>
   </div>
 </div>
+
+ <div class="modal fade" id="spinnerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="width: 20%; margin-top: 5em;">
+            <div class="modal-content" style="background-color: black; color: white;">
+                <div class="modal-body">
+                    <span style="margin-left: 25%;">
+                        <img src="design/bootstrap/spinner.gif" width="100" height="100"><br><br>
+                        <label for="recipient-name" class="control-label" style="margin-left: 25%;">Please Wait ...</label>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
