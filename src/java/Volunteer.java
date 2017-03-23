@@ -93,11 +93,7 @@ public class Volunteer extends javax.swing.JFrame implements Runnable {
                 
                 new Thread(new Runnable() { //main method thread
                     public void run() {
-                        try {
-                            respondToServer(s, Main.start().toString());
-                        } catch (IOException ex) {
-                            Logger.getLogger(Volunteer.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        respondToServer(s, Main.start().toString());
                     }
                 }).start();
 }
