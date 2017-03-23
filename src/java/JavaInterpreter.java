@@ -104,7 +104,105 @@ public class JavaInterpreter {
                                 "    }    \n" +
                                 "    //System.out.println(content);\n" +
                                 "    return content;\n" +
-                                "}";
+                                "}"
+			+ "\n\n/*-------------------------- Sentiments Analysis ------------------------------------------------- */\n\n"
+                        + "public static final String[] NEGATIVE_WORDS = {\"bad\", \"awful\"};\n" +
+                            "public static final String[] POSITIVE_WORDS = {\"good\", \"awesome\"};\n" +
+                            "\n" +
+                            "public static String getPerception (String pageContent){\n" +
+                            "    String[] pageSentences={};\n" +
+                            "\n" +
+                            "    String filteredSentences=\"\";\n" +
+                            "\n" +
+                            "    filteredSentences = filterSentences(pageContent);\n" +
+                            "\n" +
+                            "    int positiveWords = 0;\n" +
+                            "    int negativeWords = 0;\n" +
+                            "\n" +
+                            "    negativeWords = countNegativePerceptionWords(filteredSentences);\n" +
+                            "    positiveWords = countPositivePerceptionWords(filteredSentences);\n" +
+                            "\n" +
+                            "    String sentiment = getSentiment(positiveWords, negativeWords);\n" +
+                            "\n" +
+                            "    System.out.println(\"filteredSentences: \"+filteredSentences);\n" +
+                            "    System.out.println (\"positiveWords: \"+positiveWords);\n" +
+                            "    System.out.println (\"negativeWords: \"+negativeWords);\n" +
+                            "\n" +
+                            "    return sentiment;\n" +
+                            "}\n" +
+                            "\n" +
+                            "public static String getSentiment (int positiveWords, int negativeWords){\n" +
+                            "    String ret = \"\";\n" +
+                            "\n" +
+                            "    if(positiveWords == negativeWords){\n" +
+                            "        ret = \"NEUTRAL\";\n" +
+                            "    }else if(positiveWords > negativeWords){\n" +
+                            "        ret = \"GOOD\";\n" +
+                            "    }else{\n" +
+                            "        ret = \"BAD\";\n" +
+                            "    }\n" +
+                            "\n" +
+                            "    return ret;\n" +
+                            "}\n" +
+                            "\n" +
+                            "public static int countPositivePerceptionWords(String filteredSentences)\n" +
+                            "{\n" +
+                            "    int positiveCount=0;\n" +
+                            "    String[] wordsInTheSentence = filteredSentences.split(\" \");\n" +
+                            "    for(int x = 0; x < POSITIVE_WORDS.length; x++)\n" +
+                            "    {                    \n" +
+                            "        for(int y = 0; y < wordsInTheSentence.length; y++)\n" +
+                            "        {\n" +
+                            "            if(wordsInTheSentence[y].equalsIgnoreCase(POSITIVE_WORDS[x]))\n" +
+                            "            {\n" +
+                            "                positiveCount++;\n" +
+                            "            }\n" +
+                            "        }\n" +
+                            "    }\n" +
+                            "    return positiveCount;\n" +
+                            "}\n" +
+                            "\n" +
+                            "\n" +
+                            "public static int countNegativePerceptionWords(String filteredSentences){\n" +
+                            "    int negativeCount=0;\n" +
+                            "    String[] wordsInTheSentence = filteredSentences.split(\" \");\n" +
+                            "    for(int x = 0; x < NEGATIVE_WORDS.length; x++)\n" +
+                            "    {                    \n" +
+                            "        for(int y = 0; y < wordsInTheSentence.length; y++)\n" +
+                            "        {\n" +
+                            "            if(wordsInTheSentence[y].equalsIgnoreCase(NEGATIVE_WORDS[x]))\n" +
+                            "            {\n" +
+                            "                negativeCount++;\n" +
+                            "            }\n" +
+                            "        }\n" +
+                            "    }\n" +
+                            "    return negativeCount;\n" +
+                            "}\n" +
+                            "\n" +
+                            "\n" +
+                            "public static String filterSentences(String pageContent){\n" +
+                            "    //pageContent = \"Thats.is.it.\";\n" +
+                            "    //pageContent = pageContent.replaceAll(\"\\\\.\", \" \");\n" +
+                            "    //System.out.println(\"1.0 This is it!\");\n" +
+                            "    String filteredSentences = \"\";\n" +
+                            "    String[] sentences = pageContent.split(\"\\\\.\");\n" +
+                            "    int l=(sentences.length);\n" +
+                            "    try{\n" +
+                            "        for(int x = 0 ; x<l; x++)\n" +
+                            "        {\n" +
+                            "\n" +
+                            "            if(sentences[x].contains(\"K12\"))\n" +
+                            "            {   \n" +
+                            "                filteredSentences+=\" \"+sentences[x];\n" +
+                            "            }\n" +
+                            "\n" +
+                            "        }\n" +
+                            "    }catch(ArrayIndexOutOfBoundsException ex){\n" +
+                            "\n" +
+                            "    }\n" +
+                            "\n" +
+                            "    return filteredSentences;\n" +
+                            "}";
         
         String classClose = "\n\n}//End of Main class";
 //        System.out.println("thisJavaCode " + javaCode);
