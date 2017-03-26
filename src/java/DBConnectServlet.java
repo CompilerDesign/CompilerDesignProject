@@ -173,53 +173,28 @@ public class DBConnectServlet extends HttpServlet {
             }
             
             if(request.getParameter("method").equals("run")){
-                JavaInterpreter serverY = new JavaInterpreter(request.getParameter("serverContent"), "ServerY");
+                System.out.println("Running system...");
+//                JavaInterpreter serverY = new JavaInterpreter(request.getParameter("serverContent"), "ServerY");
                 JavaInterpreter volunteer = new JavaInterpreter(request.getParameter("volunteerContent"), "Main");
-                String serverYCode = serverY.javaConverted;
+//                String serverYCode = serverY.javaConverted;
                 String volunteerCode = volunteer.javaConverted;                
 
                 if(volunteerCode != ""){ 
 //                        /Server.fromUI = volunteerCode;
                         
-                        System.out.println("serverYcode " +serverYCode );
-                        new Server();
+//                        System.out.println("serverYcode " +serverYCode );
+                        Server.database = request.getParameter("dbName");
+                        Server.main(null);
 //                        implementServerY(serverYCode);                       
                                              
                        
                         JSONObject newObj = new JSONObject();      
                         newObj.put("fromVolunteer", Server.responseFromVolunteer);
 
-                         out.println(newObj);
-                                
-//                        Timer timer = new Timer(); 
-//                        timer.scheduleAtFixedRate(new TimerTask() {
-//                        @Override
-//                        public void run() {
-//                            System.out.println("timer");
-//                            if(Server.responseFromVolunteer != ""){
-//                                JSONObject newObj = new JSONObject();      
-//                                newObj.put("javaConverted", Server.responseFromVolunteer);
-//
-//                                out.println(newObj); 
-//                                
-//                                timer.cancel();
-//                            }
-//                         }
-//                        }, 0, 1000); //every second
-//                    }
-                    
-//                    javaCode = s.responseFromVolunteer;
-                
-                }
-//                JSONObject newObj = new JSONObject();      
-//                newObj.put("javaConverted", javaCode);
-//                               
-//                out.println(newObj);               
+                         out.println(newObj);                
+                }               
             }
             
-//            if(request.getParameter("method").equals("checkResult")){
-//                
-//            }
             if(request.getParameter("method").equals("loadAllList")){
                 String allList = "SELECT * from volunteers";
                 ResultSet rs = stmt.executeQuery(allList);
@@ -257,7 +232,7 @@ public class DBConnectServlet extends HttpServlet {
                 String table = "CREATE TABLE "+request.getParameter("tableName")+
                                 "(taskID INTEGER NOT NULL AUTO_INCREMENT, "+
                                 "dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "+
-                                "status VARCHAR(50) NULL, "+
+                                "status INTEGER NOT NULL DEFAULT 0, "+
                                 "IPAddress VARCHAR(20) NULL, "+
                                 "PRIMARY KEY (taskID))";
                 System.out.println(table);
@@ -276,7 +251,7 @@ public class DBConnectServlet extends HttpServlet {
                 String tbs[] = request.getParameter("columns").split("-");
                 for(int i = 0; i < tbs.length; i++){
                     System.out.println(tbs[i]);
-                    String table = "ALTER TABLE "+request.getParameter("table")+" ADD "+tbs[i]+" VARCHAR(500)";
+                    String table = "ALTER TABLE "+request.getParameter("table")+" ADD "+tbs[i]+" LONGTEXT";
                     System.out.println(table);
                     stmt.execute(table);
                 }

@@ -254,6 +254,7 @@
                     type: "POST",
                     url: "DBConnectServlet",
                     data: {'volunteerContent': $("#right_frame").contents().find('#volunteerContent').val(),
+                            'dbName': $(".dbName").html(),
                            'method': 'run'},
                     dataType: "json",
                     success: function (data) {

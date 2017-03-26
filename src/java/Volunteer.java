@@ -66,7 +66,7 @@ public class Volunteer extends javax.swing.JFrame implements Runnable {
     }
     
     private void implementCode() throws FileNotFoundException{
-        System.out.println(code);
+//        System.out.println(code);
         PrintWriter out = new PrintWriter("src/java/Main.java");
         out.println(code);
         out.close();
@@ -93,7 +93,12 @@ public class Volunteer extends javax.swing.JFrame implements Runnable {
                 
                 new Thread(new Runnable() { //main method thread
                     public void run() {
-                        respondToServer(s, Main.start().toString());
+                        try {
+                            respondToServer(s, Main.getContent());
+                            System.out.println("Sent to server...");
+                        } catch (IOException ex) {
+                            Logger.getLogger(Volunteer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }).start();
 }

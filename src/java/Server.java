@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,74 +20,57 @@ public class Server extends Thread{
  public static String responseFromVolunteer = "";
  
  public static String fromUI = "";
- 
-  
-// public static void fromUI(){
-//  JFrame frame= new JFrame("Send to client");
-//  JPanel panel = new JPanel();
-//  JButton send = new JButton("SEND");  
-//  JTextArea contents= new JTextArea(20, 50);
-//  JScrollPane scrollingArea = new JScrollPane(contents);
-//  String file = "Java Code.txt";
-//   try {
-//            FileReader fileReader = new FileReader(file);
-//            contents.read(fileReader, file);              		
-//   } catch (IOException ex) {  
-//            System.out.println("File not found.");
-//    }
-//        
-//     send.addActionListener(new ActionListener(){     
-//	      public void actionPerformed(ActionEvent actionEvent) {
-//                  code = contents.getText(); 
-//                  sendToVolunteer();
-////                  contents.setText("");               
-//	      }
-//     });
-//       
-//     panel.add(scrollingArea);
-//     panel.add(send);
-//     
-//     frame.add(panel);
-//     frame.pack();
-//     frame.setVisible(true);
-// }
- 
- 
- public Server() throws IOException 
-   {
-    System.out.println("Server");   
+ public static String database = "";
+ public static void main(String args[]) throws IOException, ClassNotFoundException, SQLException {
+//    new ServerY();
     ServerSocket serverSocket = null; 
     try { 
          serverSocket = new ServerSocket(888); 
          System.out.println ("Waiting for client(s)...");
-         while (true){                 
-            connect(serverSocket.accept()); 
-         }
+         try { 
+              while (true){                 
+                  new Server (serverSocket.accept()); 
+              }
+         } 
+         catch (IOException e){ 
+             // System.exit(1); 
+        } 
     } 
+    catch (IOException e){ 
+        // System.exit(1); 
+        } 
     finally{
-        serverSocket.close();        
+        try {
+             serverSocket.close(); 
+        }
+        catch (IOException e){ 
+            System.out.println(e);
+        } 
     }
-   }
-
- public static void connect (Socket client){
+  }
+ private Server(Socket client)
+   {
     arraySocket.add(client);
     clientSocket = client;
-    threadStart();
- }
+    start();
+   }
 
- public static void threadStart(){
+
+ public void run(){
      //heartbeat
     InetAddress ip = clientSocket.getInetAddress();
     String ipAdd = ip.getHostAddress();
     OutputStream ostream = null;
     System.out.println (ipAdd+ " connected...");
-//    System.out.println("Elza " + ServerY.returnVolCode("val"));
     try {
+        String volCode = ServerY.updateTable("");
         ostream = clientSocket.getOutputStream();
         pStream = new PrintStream(ostream);
-//        fromUI = fromUI.replace("\n"," ");
-        pStream.println(ServerY.returnVolCode("val"));
+        pStream.println(volCode);
+//        System.out.println(volCode);
      } catch (IOException ex) {
+         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+     } catch (SQLException ex) {
          Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
      }
   
@@ -95,27 +80,35 @@ public class Server extends Thread{
          while ((inputLine = in.readLine()) != null){ 
               System.out.println (ipAdd+": " + inputLine); 
               responseFromVolunteer = inputLine;
+              if(!inputLine.split(" ")[0].equals("lastHeartbeat:")){
+//                inputLine = inputLine.replaceAll("'", "\"");
+                String status = ServerY.updateTable(inputLine);
+                System.out.println(status);
+              }
+              
          }
          in.close(); 
          clientSocket.close(); 
         } 
     catch (IOException e){ 
           System.out.println (ipAdd+ " disconnected...");
-        } 
+        } catch (SQLException ex) { 
+         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+     } 
     }
  
- public static void sendToVolunteer(String code){
-      OutputStream ostream = null;
-           try {
-              for(int i = 0; i < arraySocket.size(); i++){
-                 ostream = arraySocket.get(i).getOutputStream();
-                 pStream = new PrintStream(ostream);
-                 code = code.replace("\n"," ");
-                 pStream.println(code);
-                 System.out.println(arraySocket.get(i));                                                                 
-              }
-           } catch (IOException ex) {  }
- }
+// public static void sendToVolunteer(String code){
+//      OutputStream ostream = null;
+//           try {
+//              for(int i = 0; i < arraySocket.size(); i++){
+//                 ostream = arraySocket.get(i).getOutputStream();
+//                 pStream = new PrintStream(ostream);
+//                 code = code.replace("\n"," ");
+//                 pStream.println(code);
+//                 System.out.println(arraySocket.get(i));                                                                 
+//              }
+//           } catch (IOException ex) {  }
+// }
  
 } 
 
